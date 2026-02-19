@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Conda environment files (optional if you commit environment.yml)
+*.conda
+*.tar.bz2
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Tableau temporary files / backups
+*.twb.tmp
+*.twbx
+*.log
+*.twbr

@@ -1,0 +1,895 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20253.26.0109.0333                               -->
+<workbook original-version='18.1' source-build='2025.3.2 (20253.26.0109.0333)' source-platform='win' version='18.1' xml:base='https://public.tableau.com' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <AnimationOnByDefault />
+    <MarkAnimation />
+    <ObjectModelEncapsulateLegacy />
+    <ObjectModelExtractV2 />
+    <ObjectModelTableType />
+    <SchemaViewerObjectModel />
+    <SheetIdentifierTracking />
+    <_.fcp.VConnDownstreamExtractsWithWarnings.true...VConnDownstreamExtractsWithWarnings />
+    <WindowsPersistSimpleIdentifiers />
+  </document-format-change-manifest>
+  <repository-location id='Depot_17714313068240' path='/workbooks' revision='1.0' />
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource hasconnection='false' inline='true' name='Parameters' version='18.1'>
+      <aliases enabled='yes' />
+      <column caption='Ansicht wählen' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Benchmark&quot;'>
+        <calculation class='tableau' formula='&quot;Benchmark&quot;' />
+        <members>
+          <member value='&quot;Aktienkurs&quot;' />
+          <member value='&quot;Depotwert&quot;' />
+          <member value='&quot;Benchmark&quot;' />
+        </members>
+      </column>
+    </datasource>
+    <datasource caption='index_benchmark+' inline='true' name='federated.1t6drn61fcidxp18kwepv1xet821' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='index_benchmark' name='textscan.0pkfw461kpeztg114tt540rho5rk'>
+            <connection class='textscan' directory='C:/Users/tobia/OneDrive/Dokumente/Bank/Depot/tableau_data' filename='index_benchmark.csv' password='' server='' workgroup-auth-mode='as-is' />
+          </named-connection>
+        </named-connections>
+        <relation type='collection'>
+          <relation connection='textscan.0pkfw461kpeztg114tt540rho5rk' name='index_benchmark.csv' table='[index_benchmark#csv]' type='table'>
+            <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+              <column datatype='date' name='date' ordinal='0' />
+              <column datatype='real' name='gewichtete_rendite' ordinal='1' />
+              <column datatype='string' name='anlage' ordinal='2' />
+              <column datatype='real' name='index' ordinal='3' />
+            </columns>
+          </relation>
+          <relation connection='textscan.0pkfw461kpeztg114tt540rho5rk' name='time_series_data.csv' table='[time_series_data#csv]' type='table'>
+            <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+              <column datatype='date' name='date' ordinal='0' />
+              <column datatype='string' name='anlage' ordinal='1' />
+              <column datatype='real' name='kurs' ordinal='2' />
+              <column datatype='real' name='volume' ordinal='3' />
+              <column datatype='real' name='depotwert' ordinal='4' />
+              <column datatype='real' name='return' ordinal='5' />
+              <column datatype='real' name='index' ordinal='6' />
+              <column datatype='real' name='gesamtwert_prev' ordinal='7' />
+              <column datatype='real' name='gewicht_prev' ordinal='8' />
+              <column datatype='real' name='gewichtete_rendite' ordinal='9' />
+            </columns>
+          </relation>
+        </relation>
+        <cols>
+          <map key='[anlage (time_series_data.csv)]' value='[time_series_data.csv].[anlage]' />
+          <map key='[anlage]' value='[index_benchmark.csv].[anlage]' />
+          <map key='[date (time_series_data.csv)]' value='[time_series_data.csv].[date]' />
+          <map key='[date]' value='[index_benchmark.csv].[date]' />
+          <map key='[depotwert]' value='[time_series_data.csv].[depotwert]' />
+          <map key='[gesamtwert_prev]' value='[time_series_data.csv].[gesamtwert_prev]' />
+          <map key='[gewicht_prev]' value='[time_series_data.csv].[gewicht_prev]' />
+          <map key='[gewichtete_rendite (time_series_data.csv)]' value='[time_series_data.csv].[gewichtete_rendite]' />
+          <map key='[gewichtete_rendite]' value='[index_benchmark.csv].[gewichtete_rendite]' />
+          <map key='[index (time_series_data.csv)]' value='[time_series_data.csv].[index]' />
+          <map key='[index]' value='[index_benchmark.csv].[index]' />
+          <map key='[kurs]' value='[time_series_data.csv].[kurs]' />
+          <map key='[return]' value='[time_series_data.csv].[return]' />
+          <map key='[volume]' value='[time_series_data.csv].[volume]' />
+        </cols>
+        <metadata-records>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[index_benchmark.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>date</remote-name>
+            <remote-type>133</remote-type>
+            <local-name>[date]</local-name>
+            <parent-name>[index_benchmark.csv]</parent-name>
+            <remote-alias>date</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>date</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>gewichtete_rendite</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[gewichtete_rendite]</local-name>
+            <parent-name>[index_benchmark.csv]</parent-name>
+            <remote-alias>gewichtete_rendite</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>anlage</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[anlage]</local-name>
+            <parent-name>[index_benchmark.csv]</parent-name>
+            <remote-alias>anlage</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>index</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[index]</local-name>
+            <parent-name>[index_benchmark.csv]</parent-name>
+            <remote-alias>index</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>date</remote-name>
+            <remote-type>133</remote-type>
+            <local-name>[date (time_series_data.csv)]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>date</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>date</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>anlage</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[anlage (time_series_data.csv)]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>anlage</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>kurs</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[kurs]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>kurs</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>volume</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[volume]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>volume</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>depotwert</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[depotwert]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>depotwert</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>return</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[return]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>return</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>index</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[index (time_series_data.csv)]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>index</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>gesamtwert_prev</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[gesamtwert_prev]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>gesamtwert_prev</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>gewicht_prev</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[gewicht_prev]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>gewicht_prev</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>gewichtete_rendite</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[gewichtete_rendite (time_series_data.csv)]</local-name>
+            <parent-name>[time_series_data.csv]</parent-name>
+            <remote-alias>gewichtete_rendite</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Depotwert_Kurswert_Benchmark' datatype='real' name='[Calculation_1208678386704384]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='IF [Parameters].[Parameter 1] = &apos;Aktienkurs&apos; THEN&#13;&#10;&#13;&#10;    IF [anlage (time_series_data.csv)] != &apos;Gesamtwert&apos; THEN&#13;&#10;        [kurs]&#13;&#10;    END&#13;&#10;&#13;&#10;ELSEIF [Parameters].[Parameter 1] = &apos;Depotwert&apos; THEN&#13;&#10;&#13;&#10;    [depotwert]   // inkl. Gesamtwert&#13;&#10;&#13;&#10;ELSEIF [Parameters].[Parameter 1] = &apos;Benchmark&apos; THEN&#13;&#10;&#13;&#10;    [index]&#13;&#10;&#13;&#10;END' />
+      </column>
+      <column caption='Colour' datatype='string' name='[Calculation_1208678387937281]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IF [Parameters].[Parameter 1] = &apos;Benchmark&apos; THEN&#13;&#10;    [anlage]&#13;&#10;ELSE&#13;&#10;    [anlage (time_series_data.csv)]&#13;&#10;END' />
+      </column>
+      <column caption='Anlage für Filter' datatype='string' name='[Calculation_1208678393573378]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IF [Parameters].[Parameter 1] = &apos;Depotwert&apos; THEN [anlage (time_series_data.csv)]&#13;&#10;ELSEIF [Parameters].[Parameter 1] = &apos;Aktienkurs&apos; AND [anlage] != &apos;TOTAL&apos; THEN [anlage]&#13;&#10;END' />
+      </column>
+      <column caption='index_benchmark.csv' datatype='table' name='[__tableau_internal_object_id__].[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]' role='measure' type='quantitative' />
+      <column caption='time_series_data.csv' datatype='table' name='[__tableau_internal_object_id__].[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]' role='measure' type='quantitative' />
+      <column caption='Anlage (Time Series Data.Csv)' datatype='string' name='[anlage (time_series_data.csv)]' role='dimension' type='nominal' />
+      <column caption='Date (Time Series Data.Csv)' datatype='date' name='[date (time_series_data.csv)]' role='dimension' type='ordinal' />
+      <column caption='Depotwert' datatype='real' name='[depotwert]' role='dimension' type='ordinal' />
+      <column caption='Gesamtwert Prev' datatype='real' name='[gesamtwert_prev]' role='dimension' type='ordinal' />
+      <column caption='Gewicht Prev' datatype='real' name='[gewicht_prev]' role='dimension' type='ordinal' />
+      <column caption='Gewichtete Rendite (Time Series Data.Csv)' datatype='real' name='[gewichtete_rendite (time_series_data.csv)]' role='dimension' type='ordinal' />
+      <column caption='Index (Time Series Data.Csv)' datatype='real' name='[index (time_series_data.csv)]' role='dimension' type='ordinal' />
+      <column caption='Kurs' datatype='real' name='[kurs]' role='dimension' type='ordinal' />
+      <column caption='Return' datatype='real' name='[return]' role='dimension' type='ordinal' />
+      <column caption='Volume' datatype='real' name='[volume]' role='dimension' type='ordinal' />
+      <column-instance column='[Calculation_1208678387937281]' derivation='None' name='[none:Calculation_1208678387937281:nk]' pivot='key' type='nominal' />
+      <extract _.fcp.VConnDownstreamExtractsWithWarnings.true...user-specific='false' count='-1' enabled='true' object-id='' units='records'>
+        <connection access_mode='readonly' author-locale='de_DE' class='hyper' dbname='C:/Users/tobia/AppData/Local/Temp/TableauTemp/#TableauTemp_13tfc2n0douqoa1capd4n0h4zh92.hyper' default-settings='hyper' schema='Extract' sslmode='' tablename='Extract' update-time='02/18/2026 04:10:34 PM' username='tableau_internal_user'>
+          <relation type='collection'>
+            <relation name='index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4' table='[Extract].[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]' type='table' />
+            <relation name='time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23' table='[Extract].[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]' type='table' />
+          </relation>
+          <cols>
+            <map key='[anlage (time_series_data.csv)]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[anlage]' />
+            <map key='[anlage]' value='[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4].[anlage]' />
+            <map key='[date (time_series_data.csv)]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[date]' />
+            <map key='[date]' value='[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4].[date]' />
+            <map key='[depotwert]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[depotwert]' />
+            <map key='[gesamtwert_prev]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[gesamtwert_prev]' />
+            <map key='[gewicht_prev]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[gewicht_prev]' />
+            <map key='[gewichtete_rendite (time_series_data.csv)]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[gewichtete_rendite]' />
+            <map key='[gewichtete_rendite]' value='[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4].[gewichtete_rendite]' />
+            <map key='[index (time_series_data.csv)]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[index]' />
+            <map key='[index]' value='[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4].[index]' />
+            <map key='[kurs]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[kurs]' />
+            <map key='[return]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[return]' />
+            <map key='[volume]' value='[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23].[volume]' />
+          </cols>
+          <metadata-records>
+            <metadata-record class='column'>
+              <remote-name>date</remote-name>
+              <remote-type>133</remote-type>
+              <local-name>[date]</local-name>
+              <parent-name>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</parent-name>
+              <remote-alias>date</remote-alias>
+              <ordinal>0</ordinal>
+              <family>index_benchmark.csv</family>
+              <local-type>date</local-type>
+              <aggregation>Year</aggregation>
+              <approx-count>1159</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>gewichtete_rendite</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[gewichtete_rendite]</local-name>
+              <parent-name>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</parent-name>
+              <remote-alias>gewichtete_rendite</remote-alias>
+              <ordinal>1</ordinal>
+              <family>index_benchmark.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>2024</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>anlage</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[anlage]</local-name>
+              <parent-name>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</parent-name>
+              <remote-alias>anlage</remote-alias>
+              <ordinal>2</ordinal>
+              <family>index_benchmark.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>index</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[index]</local-name>
+              <parent-name>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</parent-name>
+              <remote-alias>index</remote-alias>
+              <ordinal>3</ordinal>
+              <family>index_benchmark.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>1549</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>date</remote-name>
+              <remote-type>133</remote-type>
+              <local-name>[date (time_series_data.csv)]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>date</remote-alias>
+              <ordinal>4</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>date</local-type>
+              <aggregation>Year</aggregation>
+              <approx-count>2237</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>anlage</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[anlage (time_series_data.csv)]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>anlage</remote-alias>
+              <ordinal>5</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>12</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>kurs</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[kurs]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>kurs</remote-alias>
+              <ordinal>6</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>4791</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>volume</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[volume]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>volume</remote-alias>
+              <ordinal>7</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>179</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>depotwert</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[depotwert]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>depotwert</remote-alias>
+              <ordinal>8</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>4756</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>return</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[return]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>return</remote-alias>
+              <ordinal>9</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>9762</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>index</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[index (time_series_data.csv)]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>index</remote-alias>
+              <ordinal>10</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>5153</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>gesamtwert_prev</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[gesamtwert_prev]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>gesamtwert_prev</remote-alias>
+              <ordinal>11</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>2237</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>gewicht_prev</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[gewicht_prev]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>gewicht_prev</remote-alias>
+              <ordinal>12</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>9940</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>gewichtete_rendite</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[gewichtete_rendite (time_series_data.csv)]</local-name>
+              <parent-name>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</parent-name>
+              <remote-alias>gewichtete_rendite</remote-alias>
+              <ordinal>13</ordinal>
+              <family>time_series_data.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>7531</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]</object-id>
+            </metadata-record>
+          </metadata-records>
+        </connection>
+      </extract>
+      <layout dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[none:Calculation_1208678387937281:nk]' type='palette'>
+            <map to='#499894'>
+              <bucket>&quot;KEM&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;ACT&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;BTC&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;MSCI&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;ETH&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;AMUNDI&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;Gesamtwert&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;MSCIAS&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;GLS&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;ASML&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;normalisierte_rendite&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;VANECK&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;BASF&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;Deutschland&quot;' />
+      </semantic-values>
+      <date-options start-of-week='monday' />
+      <datasource-dependencies datasource='Parameters'>
+        <column caption='Ansicht wählen' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Benchmark&quot;'>
+          <calculation class='tableau' formula='&quot;Benchmark&quot;' />
+        </column>
+      </datasource-dependencies>
+      <object-graph>
+        <objects>
+          <object caption='index_benchmark.csv' id='index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4'>
+            <properties context=''>
+              <relation connection='textscan.0pkfw461kpeztg114tt540rho5rk' name='index_benchmark.csv' table='[index_benchmark#csv]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+                  <column datatype='date' name='date' ordinal='0' />
+                  <column datatype='real' name='gewichtete_rendite' ordinal='1' />
+                  <column datatype='string' name='anlage' ordinal='2' />
+                  <column datatype='real' name='index' ordinal='3' />
+                </columns>
+              </relation>
+            </properties>
+            <properties context='extract'>
+              <relation name='index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4' table='[Extract].[index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4]' type='table' />
+            </properties>
+          </object>
+          <object caption='time_series_data.csv' id='time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23'>
+            <properties context=''>
+              <relation connection='textscan.0pkfw461kpeztg114tt540rho5rk' name='time_series_data.csv' table='[time_series_data#csv]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+                  <column datatype='date' name='date' ordinal='0' />
+                  <column datatype='string' name='anlage' ordinal='1' />
+                  <column datatype='real' name='kurs' ordinal='2' />
+                  <column datatype='real' name='volume' ordinal='3' />
+                  <column datatype='real' name='depotwert' ordinal='4' />
+                  <column datatype='real' name='return' ordinal='5' />
+                  <column datatype='real' name='index' ordinal='6' />
+                  <column datatype='real' name='gesamtwert_prev' ordinal='7' />
+                  <column datatype='real' name='gewicht_prev' ordinal='8' />
+                  <column datatype='real' name='gewichtete_rendite' ordinal='9' />
+                </columns>
+              </relation>
+            </properties>
+            <properties context='extract'>
+              <relation name='time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23' table='[Extract].[time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23]' type='table' />
+            </properties>
+          </object>
+        </objects>
+        <relationships>
+          <relationship>
+            <expression op='='>
+              <expression op='[date]' />
+              <expression op='[date (time_series_data.csv)]' />
+            </expression>
+            <first-end-point object-id='index_benchmark.csv_93527CB6A31E46F4966C3F74B20208E4' />
+            <second-end-point object-id='time_series_data.csv_B1F40A4074854D7E8CE03634CF0B7D23' />
+          </relationship>
+        </relationships>
+      </object-graph>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Blatt 1'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='index_benchmark+' name='federated.1t6drn61fcidxp18kwepv1xet821' />
+            <datasource caption='Parameter' name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Ansicht wählen' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Benchmark&quot;'>
+              <calculation class='tableau' formula='&quot;Benchmark&quot;' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='federated.1t6drn61fcidxp18kwepv1xet821'>
+            <column caption='Depotwert_Kurswert_Benchmark' datatype='real' name='[Calculation_1208678386704384]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='IF [Parameters].[Parameter 1] = &apos;Aktienkurs&apos; THEN&#13;&#10;&#13;&#10;    IF [anlage (time_series_data.csv)] != &apos;Gesamtwert&apos; THEN&#13;&#10;        [kurs]&#13;&#10;    END&#13;&#10;&#13;&#10;ELSEIF [Parameters].[Parameter 1] = &apos;Depotwert&apos; THEN&#13;&#10;&#13;&#10;    [depotwert]   // inkl. Gesamtwert&#13;&#10;&#13;&#10;ELSEIF [Parameters].[Parameter 1] = &apos;Benchmark&apos; THEN&#13;&#10;&#13;&#10;    [index]&#13;&#10;&#13;&#10;END' />
+            </column>
+            <column caption='Colour' datatype='string' name='[Calculation_1208678387937281]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IF [Parameters].[Parameter 1] = &apos;Benchmark&apos; THEN&#13;&#10;    [anlage]&#13;&#10;ELSE&#13;&#10;    [anlage (time_series_data.csv)]&#13;&#10;END' />
+            </column>
+            <column caption='Anlage (Time Series Data.Csv)' datatype='string' name='[anlage (time_series_data.csv)]' role='dimension' type='nominal' />
+            <column datatype='string' name='[anlage]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_1208678386704384]' derivation='Attribute' name='[attr:Calculation_1208678386704384:qk]' pivot='key' type='quantitative' />
+            <column datatype='date' name='[date]' role='dimension' type='ordinal' />
+            <column caption='Depotwert' datatype='real' name='[depotwert]' role='dimension' type='ordinal' />
+            <column datatype='real' name='[index]' role='measure' type='quantitative' />
+            <column caption='Kurs' datatype='real' name='[kurs]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_1208678387937281]' derivation='None' name='[none:Calculation_1208678387937281:nk]' pivot='key' type='nominal' />
+            <column-instance column='[date]' derivation='None' name='[none:date:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678387937281:nk]'>
+            <groupfilter function='union' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;ACT&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;AMUNDI&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;ASML&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;BASF&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;BTC&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;ETH&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;Gesamtwert&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;GLS&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;KEM&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;MSCI&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;MSCIAS&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;normalisierte_rendite&quot;' />
+              <groupfilter function='member' level='[none:Calculation_1208678387937281:nk]' member='&quot;VANECK&quot;' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678387937281:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane id='1' selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678387937281:nk]' />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.1t6drn61fcidxp18kwepv1xet821].[attr:Calculation_1208678386704384:qk]</rows>
+        <cols>[federated.1t6drn61fcidxp18kwepv1xet821].[none:date:qk]</cols>
+      </table>
+      <simple-id uuid='{F85C0259-776E-4147-A588-7F474C80BDCD}' />
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='Blatt 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card param='[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678387937281:nk]' type='filter' />
+            <card mode='compact' param='[Parameters].[Parameter 1]' type='parameter' />
+            <card pane-specification-id='1' param='[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678387937281:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[Parameters].[Parameter 1]</field>
+            <field>[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678386704384:nk]</field>
+            <field>[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678386704384:ok]</field>
+            <field>[federated.1t6drn61fcidxp18kwepv1xet821].[none:Calculation_1208678387937281:nk]</field>
+            <field>[federated.1t6drn61fcidxp18kwepv1xet821].[none:anlage (time_series_data.csv):nk]</field>
+            <field>[federated.1t6drn61fcidxp18kwepv1xet821].[none:kurs:ok]</field>
+            <field>[federated.1t6drn61fcidxp18kwepv1xet821].[yr:date:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{36CFD59E-CCD6-45C7-B4EC-1FC8190E049E}' />
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Blatt 1' width='192'>
+      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
+    </thumbnail>
+  </thumbnails>
+</workbook>
