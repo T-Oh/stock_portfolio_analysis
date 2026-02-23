@@ -98,7 +98,7 @@ If everything worked succesfully you should see something like this:
 
 Here’s an example of the dashboard:
 
-![Portfolio Dashboard](images/dashboard.png)
+![Portfolio Dashboard](images/dashboard.PNG)
 
 ## Configuration
 

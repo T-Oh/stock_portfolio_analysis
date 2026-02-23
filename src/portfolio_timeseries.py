@@ -39,7 +39,9 @@ def build_portfolio_timeseries(activities, historical_prices):
     '''
     df_inventory = prepare_inventory(activities)
     time_series_df = merge_prices_and_compute_depotwert(df_inventory, historical_prices)
-    portfolio = compute_portfolio_index(time_series_df)
+    portfolio, time_series_df = compute_portfolio_index(time_series_df)
+    portfolio, time_series_df, max_drawdown = compute_drawdown(portfolio, time_series_df)
+
 
     # Strip whitespace from column names to ensure consistency
     time_series_df.columns = time_series_df.columns.str.strip()
@@ -47,6 +49,29 @@ def build_portfolio_timeseries(activities, historical_prices):
     
     return time_series_df, portfolio
 
+def compute_drawdown(portfolio, time_series_df):
+    '''Compute the drawdown of the portfolio index over time.
+    This function calculates the drawdown of the portfolio index by comparing the current index value to the historical maximum index value. The drawdown is expressed as a percentage and indicates the decline from the peak value.
+    Args:
+        portfolio (pd.DataFrame): DataFrame with columns ['date', 'anlage', 'gewichtete_rendite', 'index'] representing the portfolio index over time.
+    Returns:
+        pd.DataFrame: DataFrame with columns:
+            - date (datetime)
+            - anlage (str, should be 'normalisierte_rendite' for the portfolio)
+            - drawdown (float, percentage drawdown from the historical maximum index value)
+    '''
+    time_series_df = time_series_df.copy()
+    time_series_df['historical_max'] = time_series_df.groupby('anlage')['kurs'].transform('cummax')
+    time_series_df['drawdown'] = (time_series_df['kurs'] - time_series_df['historical_max']) / time_series_df['historical_max']
+    time_series_df['weighted_drawdown'] = time_series_df['drawdown'] * time_series_df['gewicht_prev']
+    max_drawdown = time_series_df['drawdown'].min()
+    df = portfolio.copy()
+    df['historical_max'] = df['index'].cummax()
+    df['drawdown'] = (df['index'] - df['historical_max']) / df['historical_max']
+    max_drawdown = df['drawdown'].min()
+    time_series_df['drawdown'][time_series_df['anlage'] == 'Gesamtwert'] = df['drawdown'][df['anlage'] == 'normalisierte_rendite'].values
+    time_series_df['weighted_drawdown'][time_series_df['anlage'] == 'Gesamtwert'] = df['drawdown'][df['anlage'] == 'normalisierte_rendite'].values
+    return df, time_series_df, max_drawdown
 
 
 def prepare_inventory(activities):
@@ -152,4 +177,4 @@ def compute_portfolio_index(time_series_df):
     portfolio['date'] = pd.to_datetime(portfolio['date'])
     portfolio['index'] = portfolio['index'].astype(float)
     
-    return portfolio
+    return portfolio, df
