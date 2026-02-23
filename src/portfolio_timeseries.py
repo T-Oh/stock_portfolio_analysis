@@ -17,6 +17,7 @@ for further analysis or visualization.
 """
 
 import pandas as pd
+import numpy as np
 
 def build_portfolio_timeseries(activities, historical_prices):
     '''Build a time series of the portfolio value (depotwert) over time by merging the inventory of stocks owned with their historical prices.
@@ -31,6 +32,9 @@ def build_portfolio_timeseries(activities, historical_prices):
             - kurs (float, close price)
             - volume (float, cumulative volume owned)
             - depotwert (float, value of the position in that stock on that date)
+            - cumulative_buys (float, total money spent on buys up to that date)
+            - cumulative_sales (float, total money gained from sales up to that date)
+            - total_return (float, returns: depotwert + cumulative_sales - cumulative_buys)
         portfolio, LongFormat DataFrame with columns:
             - date (datetime)
             - anlage (str, either 'normalisierte_rendite' for the portfolio or 'MSCI' for the benchmark)
@@ -41,6 +45,7 @@ def build_portfolio_timeseries(activities, historical_prices):
     time_series_df = merge_prices_and_compute_depotwert(df_inventory, historical_prices)
     portfolio, time_series_df = compute_portfolio_index(time_series_df)
     portfolio, time_series_df, max_drawdown = compute_drawdown(portfolio, time_series_df)
+    time_series_df = compute_total_returns(time_series_df, activities)
 
 
     # Strip whitespace from column names to ensure consistency
@@ -48,6 +53,124 @@ def build_portfolio_timeseries(activities, historical_prices):
     portfolio.columns = portfolio.columns.str.strip()
     
     return time_series_df, portfolio
+
+def compute_total_returns(time_series_df, activities):
+    '''Compute total returns for the portfolio and individual assets as a time series.
+    
+    Uses the formula: total_return(t) = current_market_value(t) + sum_t(sales(t)) - sum_t(buys(t))
+    Where:
+        - current_market_value(t) = depotwert (current value of holdings)
+        - sum_t(sales(t)) = cumulative proceeds from sales up to time t
+        - sum_t(buys(t)) = cumulative cost of buys up to time t
+    
+    This provides a total return metric that accounts for capital in and out of the portfolio,
+    representing the total profit/loss including realized gains from sales and remaining positions.
+    
+    Args:
+        time_series_df (pd.DataFrame): Time series DataFrame with columns:
+            - date (datetime)
+            - anlage (asset label)
+            - depotwert (float, current market value)
+            - other columns from the build process
+        activities (pd.DataFrame): Activity log with columns:
+            - date (datetime)
+            - anlage (asset label)
+            - type (str: 'B' for buy, 'S' for sell, etc.)
+            - volume (float, number of shares)
+            - value (float, price per share) - optional, will be fetched from context if needed
+    
+    Returns:
+        pd.DataFrame: Enhanced time_series_df with additional columns:
+            - cumulative_buys (float, total money spent on buys up to that date)
+            - cumulative_sales (float, total money gained from sales up to that date)
+            - total_return (float, returns computed from the formula)
+    '''
+    
+    df = time_series_df.copy()
+    
+    # Extract buys and sells with their costs/proceeds
+    buys = activities[activities['type'] == 'B'].copy()
+    sells = activities[activities['type'] == 'S'].copy()
+    cash_dividends = activities[activities['type'] == 'CD'].copy()
+    
+
+    if 'value' not in buys.columns:
+        print("Warning: 'value' column not found in buys activities")
+        buys['cost'] = 0
+    else:
+        buys['cost'] = buys['volume'] * buys['value']
+    
+    if 'value' not in sells.columns:
+        print("Warning: 'value' column not found in sells activities")
+        sells['proceeds'] = 0
+    else:
+        sells['proceeds'] =  sells['value'] #the original excel formatting in Portfolio_Activities.xlsx considers the value field for sells to be the total proceeds, not the price per share, so we can use it directly without multiplying by volume. If your actual data has a different format, you may need to adjust this calculation.
+    
+    # Build cumulative buy costs per asset per date
+    buys_agg = buys.groupby(['date', 'anlage'])['cost'].sum().reset_index()
+    buys_agg = buys_agg.sort_values(['anlage', 'date'])
+    buys_agg['cumulative_buys'] = buys_agg.groupby('anlage')['cost'].cumsum()
+    buys_agg = buys_agg[['date', 'anlage', 'cumulative_buys']]
+    
+    # Build cumulative sell proceeds per asset per date
+    sells_agg = sells.groupby(['date', 'anlage'])['proceeds'].sum().reset_index()
+    sells_agg = sells_agg.sort_values(['anlage', 'date'])
+    sells_agg['cumulative_sales'] = sells_agg.groupby('anlage')['proceeds'].cumsum()
+    sells_agg = sells_agg[['date', 'anlage', 'cumulative_sales']]
+
+    # Build cumulative cash dividends per asset per date
+    dividends_agg = cash_dividends.groupby(['date', 'anlage'])['value'].sum().reset_index()
+    dividends_agg = dividends_agg.sort_values(['anlage', 'date'])
+    dividends_agg['cumulative_dividends'] = dividends_agg.groupby('anlage')['value'].cumsum()
+    dividends_agg = dividends_agg[['date', 'anlage', 'cumulative_dividends']]
+    
+    # Merge cumulative buys and sales and dividends into time series for individual assets
+    df = df.merge(buys_agg, on=['date', 'anlage'], how='left')
+    df = df.merge(sells_agg, on=['date', 'anlage'], how='left')
+    df = df.merge(dividends_agg, on=['date', 'anlage'], how='left')
+    
+    # Forward-fill cumulative values for dates without activity
+    df = df.sort_values(['anlage', 'date']).reset_index(drop=True)
+    df['cumulative_buys'] = df.groupby('anlage')['cumulative_buys'].ffill().fillna(0)
+    df['cumulative_sales'] = df.groupby('anlage')['cumulative_sales'].ffill().fillna(0)
+    df['cumulative_dividends'] = df.groupby('anlage')['cumulative_dividends'].ffill().fillna(0)
+    
+    # Compute total return for individual assets: depotwert + cumulative_sales - cumulative_buys + cumulative_dividends
+    df['total_return'] = df['depotwert'] + df['cumulative_sales'] - df['cumulative_buys'] + df['cumulative_dividends']
+    
+    # Handle portfolio total ("Gesamtwert") by summing across all assets
+    # The portfolio total is the sum of all individual asset returns
+    portfolio_total = df[df['anlage'] != 'Gesamtwert'].groupby('date').agg({
+        'cumulative_buys': 'sum',
+        'cumulative_sales': 'sum',
+        'total_return': 'sum'
+    }).reset_index()
+    portfolio_total['anlage'] = 'Gesamtwert'
+    
+    # Replace the Gesamtwert row calculations with summed values
+    df_non_total = df[df['anlage'] != 'Gesamtwert'].copy()
+    df_total = df[df['anlage'] == 'Gesamtwert'].copy()
+    
+    # Update Gesamtwert with calculated portfolio totals
+    df_total = df_total.merge(portfolio_total[['date', 'cumulative_buys', 'cumulative_sales', 'total_return']], 
+                              on='date', how='left', suffixes=('_old', ''))
+    df_total = df_total.drop(columns=['cumulative_buys_old', 'cumulative_sales_old'], errors='ignore')
+    
+    # Reconstruct the dataframe
+    df = pd.concat([df_non_total, df_total], ignore_index=True).sort_values(['date', 'anlage']).reset_index(drop=True)
+
+    # Weighted total return: normalize total_return by amount of money spent (cumulative_buys)
+    # Avoid division by zero - if cumulative_buys is zero, set result to NaN
+    df['weighted_total_return'] = np.where(
+        df['cumulative_buys'] == 0,
+        np.nan,
+        df['total_return'] / df['cumulative_buys']
+    )
+    # Replace infinite values (shouldn't occur due to the guard) and keep NaN for zero-investment periods
+    df['weighted_total_return'].replace([np.inf, -np.inf], np.nan, inplace=True)
+
+    return df
+
 
 def compute_drawdown(portfolio, time_series_df):
     '''Compute the drawdown of the portfolio index over time.
