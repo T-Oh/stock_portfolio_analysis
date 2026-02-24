@@ -46,7 +46,7 @@ def build_portfolio_timeseries(activities, historical_prices):
     portfolio, time_series_df = compute_portfolio_index(time_series_df)
     portfolio, time_series_df, max_drawdown = compute_drawdown(portfolio, time_series_df)
     time_series_df = compute_total_returns(time_series_df, activities)
-
+    time_series_df = add_unrealized_gain_fifo(time_series_df, activities)
 
     # Strip whitespace from column names to ensure consistency
     time_series_df.columns = time_series_df.columns.str.strip()
@@ -253,7 +253,7 @@ def merge_prices_and_compute_depotwert(df_inventory, historical_prices):
     df['depotwert'] = df['kurs'] * df['volume']
     df = df.ffill()
     
-    # Total Depotwert pro Tag
+    # Total Depotwert per day
     total = df.groupby("date", as_index=False)["depotwert"].sum()
     total['kurs'] = 0
     total['anlage'] = "Gesamtwert"
@@ -301,3 +301,108 @@ def compute_portfolio_index(time_series_df):
     portfolio['index'] = portfolio['index'].astype(float)
     
     return portfolio, df
+
+
+def calculate_fifo_cost_basis(asset_name, target_volume, activities):
+    """Calculate FIFO cost basis for a specific volume of an asset.
+    
+    Uses FIFO matching of sell orders to earliest buy orders to determine
+    the cost basis of the remaining target volume.
+    
+    Args:
+        asset_name (str): The name of the asset
+        target_volume (float): The volume to calculate cost basis for (remaining holdings)
+        activities (pd.DataFrame): Activity log with columns: 'date', 'type', 'volume', 'value', 'fee_buy'
+    
+    Returns:
+        float: Cost basis for the target volume using FIFO method
+    """
+    # Filter and sort activities for this asset
+    asset_activities = activities[activities['anlage'] == asset_name].sort_values('date').copy()
+    
+    # Extract buys and sells
+    buys = asset_activities[asset_activities['type'] == 'B'][['date', 'volume', 'value', 'fee_buy']].copy()
+    sells = asset_activities[asset_activities['type'] == 'S'][['volume']].copy()
+    
+    # Build FIFO queue with (volume, cost_per_unit) for each buy
+    fifo_queue = []
+    for _, buy_row in buys.iterrows():
+        
+        fifo_queue.append({
+            'volume': buy_row['volume'],
+            'cost_per_unit': buy_row['value']
+        })
+    
+    # Calculate cost basis for target volume by summing from remaining buys
+    cost_basis = 0
+    remaining_to_match = target_volume
+    
+    for buy in fifo_queue:
+        if remaining_to_match <= 0:
+            break
+        volume_to_use = min(buy['volume'], remaining_to_match)
+        cost_basis += volume_to_use * buy['cost_per_unit']
+        remaining_to_match -= volume_to_use
+    
+    return cost_basis
+
+
+def add_unrealized_gain_fifo(time_series_df, activities):
+    """Add unrealized gain for the most recent date using FIFO cost basis.
+    
+    Unrealized gain = depotwert (market value) - FIFO cost basis of remaining holdings
+    Only calculates for the most recent date in the time series.
+    
+    Args:
+        time_series_df (pd.DataFrame): Time series DataFrame with columns:
+            - date (datetime)
+            - anlage (asset label)
+            - depotwert (float): current market value
+            - volume (float): current volume held
+        activities (pd.DataFrame): Activity log with columns:
+            - date (datetime)
+            - anlage (asset label)
+            - type (str: 'B' for buy, 'S' for sell)
+            - volume (float)
+            - value (float)
+            - fee_buy (float)
+    
+    Returns:
+        pd.DataFrame: time_series_df with unrealized_gain and unrealized_gain_pct columns
+    """
+    df = time_series_df.copy()
+    
+    # Get the most recent date
+    max_date = df['date'].max()
+    
+    # Only add unrealized gain for the most recent date
+    df['unrealized_gain'] = np.nan
+    df['unrealized_gain_pct'] = np.nan
+    
+    # Get last date data (excluding totals)
+    last_date_data = df[(df['date'] == max_date) & (df['anlage'] != 'Gesamtwert')].copy()
+    
+    for _, row in last_date_data.iterrows():
+        asset = row['anlage']
+        volume = row['volume']
+        depotwert = row['depotwert']
+        
+        if volume > 0:
+            # Calculate FIFO cost basis for this asset's remaining volume
+            fifo_cost = calculate_fifo_cost_basis(asset, volume, activities)
+            unrealized_gain = depotwert - fifo_cost
+            unrealized_gain_pct = (unrealized_gain / fifo_cost * 100) if fifo_cost != 0 else np.nan
+            
+            # Update the dataframe
+            df.loc[(df['date'] == max_date) & (df['anlage'] == asset), 'unrealized_gain'] = unrealized_gain
+            df.loc[(df['date'] == max_date) & (df['anlage'] == asset), 'unrealized_gain_pct'] = unrealized_gain_pct
+    
+    # Calculate portfolio total for unrealized gain on last date
+    portfolio_unrealized = df[(df['date'] == max_date) & (df['anlage'] != 'Gesamtwert')]['unrealized_gain'].sum()
+    portfolio_fifo_cost = df[(df['date'] == max_date) & (df['anlage'] != 'Gesamtwert')]['depotwert'].sum() - portfolio_unrealized
+    portfolio_unrealized_pct = (portfolio_unrealized / portfolio_fifo_cost * 100) if portfolio_fifo_cost != 0 else np.nan
+    
+    df.loc[(df['date'] == max_date) & (df['anlage'] == 'Gesamtwert'), 'unrealized_gain'] = portfolio_unrealized
+    df.loc[(df['date'] == max_date) & (df['anlage'] == 'Gesamtwert'), 'unrealized_gain_pct'] = portfolio_unrealized_pct
+    
+    return df
