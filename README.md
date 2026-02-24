@@ -7,7 +7,7 @@ The output can then be viewed and analyzed using the included Tableau Dashboard.
 
 - Fetch historical stock prices using Yahoo Finance (`yfinance`), with manual price fallbacks.  
 - Compute stock inventory over time from buy, sell, and dividend activities.  
-- Build daily portfolio time series and calculate portfolio indices.  
+- Build daily portfolio time series and calculate portfolio indices like Total Return, Unrealized Return, Drawdown, Total Owned Value etc.  
 - Save formatted CSV files ready for Tableau.  
 
 ## Requirements
@@ -32,10 +32,11 @@ The analysis uses `Portfolio_Activities.xlsx` as the activity log. The file shou
 
 - `anlage` (asset label)
 - `date` (date of activity)
-- `type` (activity type, e.g., B (Buy), S (Sell), SD (Dividend payed in shares))
+- `type` (activity type, e.g., B (Buy), S (Sell), SD (Dividend payed in shares), CD (Dividends payed in money))
 - `volume` (number of shares acquired or sold)
+- `value` (stock price for Buys, amount of obtained money for Sells and Cash Dividends)
 
-- Optional: `value` (price per share on the date of action), `fee_buy`, `fee_annual`, `fee sell`
+An examplary activity file can be found in `/data`
 
 Ensure that dates are normalized (no time component) and that column names match exactly, as the scripts rely on them.  
 
@@ -59,7 +60,7 @@ This will:
 
 4. Save CSV files in tableau_data/ for Tableau:
 
-5. time_series_data.csv – daily value per stock.
+5. time_series_data.csv – daily value per stock and for the total portfolio.
 
 6. portfolio_history.csv – historical prices of stocks.
 
@@ -69,13 +70,29 @@ This will:
 
 ## Features
 
- - Compare the portfolio performance to the MSCI World Index
+ - KPIs (total value, total returns, unrealized gains, relative unrealized gains)
 
- - Visualize the share price development of all assests in your portfolio
+ - Allocation pie chart
 
- - Visualize the development of owned value of your assets and your total portfolio
+ - Total and relative return bar charts per stock
 
- - Compare the graphs to analyze performance of different assets
+ - Time series graphs for:
+
+    - Comparison of the portfolio performance to the MSCI World Index
+
+    - Share price development of all assests in your portfolio
+
+    - Development of owned value of your assets and your total portfolio
+
+    - Drawdown of all assets and you total portfolio
+
+    - Weighted Drawdown (Total Drawdown based on owned volumes) for all assets and total portfolio
+
+    - Total Return (including money made from sales and money spent on buys) for all assets and total portfolio
+
+    - Telative Total Return (Total Return normalized to money spent ont buys)
+
+- Compare the graphs to analyze performance of different assets
 
 To visualize the portfolio:
 
@@ -86,12 +103,6 @@ To visualize the portfolio:
  - Filter by asset to select which stocks to display.
 
  - Highlight selected assets using color to track them across the portfolio.
-
-3. Configure dashboard layouts:
-
- - Multiple sheets can be stacked for comparative analysis.
-
- - Ensure filters or parameters are set to control individual sheets independently if needed.
 
 If everything worked succesfully you should see something like this:
 ## Tableau Dashboard Preview
